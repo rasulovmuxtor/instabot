@@ -594,33 +594,33 @@ class API(object):
                     self.logger.info("Response Text: {}".format(str(response.text)))
                 except Exception:
                     pass
-            if response.status_code == 429:
-                # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
-                if timeout_minutes is None:
-                    timeout_minutes = 0
-                if timeout_minutes == 15:
-                    # If we have been waiting for more than 15 minutes, lets restart.
-                    time.sleep(1)
-                    self.logger.error(
-                        "Since we hit 15 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
-                    )
-                    delete_credentials(self.base_path)
-                    sys.exit()
-                timeout_minutes += 5
-                self.logger.warning(
-                    "That means 'too many requests'. I'll go to sleep "
-                    "for {} minutes.".format(timeout_minutes)
-                )
-                time.sleep(timeout_minutes * 60)
-                return self.send_request(
-                    endpoint,
-                    post,
-                    login,
-                    with_signature,
-                    headers,
-                    extra_sig,
-                    timeout_minutes,
-                )
+            # if response.status_code == 429:
+            #     # if we come to this error, add 5 minutes of sleep everytime we hit the 429 error (aka soft bann) keep increasing untill we are unbanned
+            #     if timeout_minutes is None:
+            #         timeout_minutes = 0
+            #     if timeout_minutes == 15:
+            #         # If we have been waiting for more than 15 minutes, lets restart.
+            #         time.sleep(1)
+            #         self.logger.error(
+            #             "Since we hit 15 minutes of time outs, we have to restart. Removing session and cookies. Please relogin."
+            #         )
+            #         delete_credentials(self.base_path)
+            #         sys.exit()
+            #     timeout_minutes += 5
+            #     self.logger.warning(
+            #         "That means 'too many requests'. I'll go to sleep "
+            #         "for {} minutes.".format(timeout_minutes)
+            #     )
+            #     time.sleep(timeout_minutes * 60)
+            #     return self.send_request(
+            #         endpoint,
+            #         post,
+            #         login,
+            #         with_signature,
+            #         headers,
+            #         extra_sig,
+            #         timeout_minutes,
+            #     )
             if response.status_code == 400:
                 response_data = json.loads(response.text)
                 if response_data.get("challenge_required"):
